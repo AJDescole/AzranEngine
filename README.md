@@ -1,6 +1,6 @@
 # Azran
 
-**Azran** is a game FOSS project using PixiJS. It is heavily inspired by Chapatiz and Blablaland and tends to easily make game that resemble them. We indent to make fully animated avatars, and a coherent level design. 
+**Azran** is a game FOSS project using PixiJS. It is heavily inspired by Chapatiz and Blablaland and tends to easily make game that resemble them. We indent to make our own fully animated avatars, and a coherent level design. 
 
 ## Members of the project
 
