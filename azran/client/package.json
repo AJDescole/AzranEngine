@@ -1,0 +1,16 @@
+{
+  "name": "azran",
+  "version": "1.0.0",
+  "description": "Azran client",
+  "main": "azran.js",
+  "dependencies": {
+    "pixi-animate": "^1.3.3",
+    "pixi.js": "^4.7.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@AzranDescole @PascalGF",
+  "license": "MIT"
+}
