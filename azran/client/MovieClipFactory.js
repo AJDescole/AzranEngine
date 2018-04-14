@@ -9,6 +9,10 @@ let MovieClipFactory = function(library, animationfield, symbolfield) {
     let MC = new PIXI.animate.MovieClip;
 
     let Commands = {
+        // build brand new movieclip
+        b: function(options, duration, loop, framerate, labels) {
+            return new PIXI.animate.MovieClip(options, duration, loop, framerate, labels);
+        },
         // new symbol
         ns: function(obj, field, library, animationfield, symbolfield) {
             console.log("ns", field, animationfield, symbolfield);
@@ -29,12 +33,33 @@ let MovieClipFactory = function(library, animationfield, symbolfield) {
         // add Child
         ac: function(obj, field) {
             console.log("ac", obj, field);
-            return obj.ac(obj[field]);
+            obj.ac(obj[field]);
+            return obj;
         },
         // set Transform
         t: function(obj, x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY) {
             console.log("t", obj, x, y);
             return obj.t(x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY);
+        },
+        // set Transform to subobject
+        tf: function(obj, field, x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY) {
+            console.log("tf", obj, field, x, y);
+            console.log(obj[field])
+            obj[field].t(x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY);
+            return obj;
+        },
+        gs: function(obj, label) {
+            obj.gotoAndStop(label);
+            return obj;
+        },
+        // comments
+        c: function(obj, ...data) {
+            console.log(data);
+            return obj;
+        },
+        // nullified
+        n: function(obj, ...data) {
+            return obj;
         }
     }
 
@@ -46,6 +71,8 @@ let MovieClipFactory = function(library, animationfield, symbolfield) {
             MC = Commands.ns(MC, args[0], library, animationfield, args[1]);
         } else if (c == "ng") {
             MC = Commands.ng(MC, args[0], library, args[1], args[2]);
+        } else if (c == "b") {
+            MC = Commands.b(...args);
         } else {
             MC = Commands[c](MC, ...args);
         }
