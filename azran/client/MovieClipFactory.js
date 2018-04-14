@@ -15,36 +15,29 @@ let MovieClipFactory = function(library, animationfield, symbolfield) {
         },
         // new symbol
         ns: function(obj, field, library, animationfield, symbolfield) {
-            console.log("ns", field, animationfield, symbolfield);
             obj[field] = MovieClipFactory(library, animationfield, symbolfield);
             return obj;
         },
         // new graphics
         ng: function(obj, field, library, shapefield, index) {
-            console.log("ng", field, index);
             obj[field] = (new PIXI.Graphics).d(library[shapefield][index]);
             return obj;
         },
         // add Timed Child
         at: function(obj, field, startFrame, duration, keyframes) {
-            console.log("at", field, startFrame, duration, keyframes);
             return obj.at(obj[field], startFrame, duration, keyframes);
         },
         // add Child
         ac: function(obj, field) {
-            console.log("ac", obj, field);
             obj.ac(obj[field]);
             return obj;
         },
         // set Transform
         t: function(obj, x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY) {
-            console.log("t", obj, x, y);
             return obj.t(x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY);
         },
         // set Transform to subobject
         tf: function(obj, field, x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY) {
-            console.log("tf", obj, field, x, y);
-            console.log(obj[field])
             obj[field].t(x, y, scaleX, scaleY, skewX, skewY, pivotX, pivotY);
             return obj;
         },
