@@ -10,22 +10,20 @@ class Player extends A {
         var p = this;
         window.addEventListener(
             "keydown",
-            function(event) { p.onDown(event) },
+            function(event) { p.onDown(event); p.keys[event.keyCode] = true; },
             false
         );
         window.addEventListener(
             "keyup",
-            function(event) { p.onUp(event) },
+            function(event) { p.onUp(event); p.keys[event.keyCode] = false; },
             false
         )
     }
 
     onDown(event) {
-        this.keys[event.keyCode] = true;
     }
 
     onUp(event) {
-        this.keys[event.keyCode] = false;
     }
 
 }
