@@ -3,7 +3,8 @@ require('pixi.js');
 require('pixi-animate');
 
 var MC = PIXI.animate.MovieClip;
-var G = PIXI.Graphics;
+var A = require('./avatar.js').Avatar;
+var P = require('./player.js').Player;
 
 let AnimationLoader = function()
 {
@@ -22,11 +23,27 @@ PIXI.loaders.Loader.addPixiMiddleware(AnimationLoader);
 
 var Scene = MC.e(function() {
     MC.call(this);
+
+    let s = new P(
+        PIXI.animate.ShapesCache,
+        "animations",
+        "228"
+    );
+
+    s.x = 400;
+    s.y = 400;
+    this.ac(s);
+
     console.log("== AZRAN SCENE BUILT ==");
 });
 
+Scene.assets = {
+    shapes: "azran.shapes.txt",
+    animations: "azran.animations.json"
+};
+
 window.onload = function() {
-    new PIXI.animate.Scene(800, 800, {
+    let app = new PIXI.animate.Scene(800, 800, {
         view: document.getElementById("stage"),
         backgroundColor: 0xFFFFFF,
         antialias: true
