@@ -29,6 +29,10 @@ See `docs/avatar.md` for more details about avatar breakdown.
 Now handling an avatar with multiple parts (such as hat, feet, ...) and animations (such as directions). 
 We're currently working on a tiny chat system for demonstration.
 
+### 2018-04-15
+
+Tiny chat done. Now working on UI and room system, inspired by discord. 
+
 ## License
 
 This project is distributed under the MIT license.
