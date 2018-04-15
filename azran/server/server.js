@@ -1,43 +1,75 @@
 "use strict";
 var WebSocket = require('ws');
 
-let server = new WebSocket.Server({port: 1944});
-let users = {};
+class Server {
+    constructor(options) {
+        this.ws = new WebSocket.Server(options);
+        this.users = {};
+    }
 
-server.on("connection", function(client) {
-	client.on("message", function(data) {
-		console.log("Received : %s", data);
-		let msg = JSON.parse(data);
+    run() {
+        let s = this;
+        this.ws.on("connection", function(client) {
+            client.on("message", function(data) {
+                console.log("Received : %s", data);
+                let msg = JSON.parse(data);
+                let method = "on"+msg[0].charAt(0).toUpperCase() + msg[0].slice(1);
+                let args = msg.slice(1);
 
-		if (msg[0] == "join") {
-			let ID = msg[1];
-			client.ID = ID;
-			for (let i in users) {
-				client.send(users[i]);
-			}
-			users[ID] = data;
-		} else if (msg[0] == "sm" || msg[1] == "em") {
-			let ID = msg[1];
-			let user = JSON.parse(users[ID]);
-			user[4] = msg[3];
-			user[5] = msg[4];
-			users[ID] = JSON.stringify(user);
-		}
+                let allowed_methods = ["onJoin", "onAnimation"];
+                if (allowed_methods.indexOf(method) !== -1) {
+                    s[method](client, ...args);
+                }
+            });
+            client.on("close", function(data) {
+                s.onQuit(client);
+            });
+        });
+    }
 
-		server.clients.forEach(function(c) {
-			if (c !== client && c.readyState === WebSocket.OPEN) {
-				c.send(data);
-			}
-		});
-	});
-	client.on("close", function(data) {
-		console.log(client.ID, "closed");
-		delete users[client.ID];
+    broadcast(method, ID, ...args) {
+        console.log("bcasting",method, ID,args);
+        for (let i in this.users) {
+            let user = this.users[i];
+            if (user.readyState === WebSocket.OPEN && user.ID !== ID) {
+                user.send(JSON.stringify([method, ID, ...args]));
+            }
+        }
+    }
 
-		server.clients.forEach(function(c) {
-			if (c !== client && c.readyState === WebSocket.OPEN) {
-				c.send(JSON.stringify(["quit", client.ID]));
-			}
-		});
-	});
-});
+    onJoin(client, gear, hat, x, y) {
+        let ID = Math.random().toString(36).substring(7);
+        let bcast = JSON.stringify(["join", ID, gear, hat, x, y]);
+
+        client.ID = ID;
+        client.gear = gear;
+        client.hat = hat;
+        client.x = x;
+        client.y = y;
+
+        for (let i in this.users) {
+            let user = this.users[i];
+            if (user.readyState === WebSocket.OPEN) {
+                let msg = JSON.stringify(["join", user.ID, user.gear, user.hat, user.x, user.y]);
+                client.send(msg);
+                user.send(bcast);
+            }
+        }
+        this.users[ID] = client;
+    }
+
+    onAnimation(client, label, x, y) {
+        client.x = x;
+        client.y = y;
+
+        this.broadcast("animation", client.ID, label, x, y);
+    }
+
+    onQuit(client) {
+        this.broadcast("quit", client.ID);
+        delete this.users[client.ID];
+    }
+}
+
+let server = new Server({port: 1944});
+server.run();
