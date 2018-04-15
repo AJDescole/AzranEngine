@@ -10,7 +10,7 @@ class Avatar extends PIXI.animate.MovieClip {
         super();
         this.animations = ["inactive", "up", "down", "right", "left"];
         this.keys = {};
-        this.speed = 3;
+        this.speed = 2;
 
         this.character = MCF(library, animationfield, symbol);
         this.setAnimation(this.animation);
