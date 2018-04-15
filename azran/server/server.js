@@ -16,7 +16,7 @@ class Server {
                 let method = "on"+msg[0].charAt(0).toUpperCase() + msg[0].slice(1);
                 let args = msg.slice(1);
 
-                let allowed_methods = ["onJoin", "onAnimation"];
+                let allowed_methods = ["onJoin", "onAnimation", "onPing"];
                 if (allowed_methods.indexOf(method) !== -1) {
                     s[method](client, ...args);
                 }
@@ -71,6 +71,10 @@ class Server {
     onQuit(client) {
         this.broadcast("quit", client.ID);
         delete this.users[client.ID];
+    }
+
+    onPing(client) {
+        this.send(client, "pong");
     }
 }
 

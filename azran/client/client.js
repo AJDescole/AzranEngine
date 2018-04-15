@@ -22,6 +22,24 @@ class Client {
         this.ws.send(JSON.stringify(args));
     }
 
+    initPing() {
+        let c = this;
+        this.time = 0;
+        this.ticker = new PIXI.ticker.Ticker;
+        this.ticker.add(function(delta) { c.onDelta(delta) });
+        this.ticker.start();
+    }
+
+    onDelta(delta) {
+        this.time += delta;
+        console.log(this.time);
+        if (this.time >= 2000) {
+            this.time = 0;
+            console.log("ping");
+            this.send("ping");
+        }
+    }
+
     onOpen(event) {
         let client = this;
         let player = new Player(this.library, this.animationfield, this.symbol);
@@ -43,6 +61,8 @@ class Client {
 
         this.send("join", gear, hat, x, y);
         this.scene.ac(player);
+
+        this.initPing();
     }
 
     onMessage(event) {
@@ -66,6 +86,10 @@ class Client {
         this.users[ID] = user;
 
         this.scene.ac(user);
+    }
+
+    onPong() {
+        console.log("pong");
     }
 
     onAnimation(ID, label, x, y) {
