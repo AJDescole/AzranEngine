@@ -20,6 +20,22 @@ class Player extends A {
         )
     }
 
+    onFrame(delta) {
+        super.onFrame(delta);
+
+        if (this.isDown(LEFT)) {
+            this.setAnimation("left");
+        } else if (this.isDown(RIGHT)) {
+            this.setAnimation("right");
+        } else if (this.isDown(UP)) {
+            this.setAnimation("up");
+        } else if (this.isDown(DOWN)) {
+            this.setAnimation("down");
+        } else {
+            this.setAnimation("inactive");
+        }
+    }
+
     onDown(event) {
     }
 
