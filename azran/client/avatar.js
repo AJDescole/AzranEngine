@@ -12,9 +12,8 @@ class Avatar extends PIXI.animate.MovieClip {
         this.keys = {};
         this.speed = 3;
 
-
         this.character = MCF(library, animationfield, symbol);
-        this.setAnimation(this.animations[0]);
+        this.setAnimation(this.animation);
         this.setGear(0);
         this.setHat(0);
         this.setFace("happy");
@@ -49,25 +48,27 @@ class Avatar extends PIXI.animate.MovieClip {
     }
 
     setAnimation(label) {
-        this.character.gotoAndStop(label);
+        if (this.animation != label) {
+            this.animation = label;
+            this.character.gotoAndStop(label);
+            this.onAnimationChange(label);
+        }
     }
 
     onFrame(delta) {
-        if (this.isDown(LEFT)) {
-            this.setAnimation("left");
+        if (this.animation == "left") {
             this.x -= this.speed;
-        } else if (this.isDown(RIGHT)) {
-            this.setAnimation("right");
+        } else if (this.animation == "right") {
             this.x += this.speed;
-        } else if (this.isDown(UP)) {
-            this.setAnimation("up");
+        } else if (this.animation == "up") {
             this.y -= this.speed;
-        } else if (this.isDown(DOWN)) {
-            this.setAnimation("down");
+        } else if (this.animation == "down") {
             this.y += this.speed;
-        } else {
-            this.setAnimation("inactive");
         }
+    }
+
+    onAnimationChange(label) {
+
     }
 
     isDown(key) {
