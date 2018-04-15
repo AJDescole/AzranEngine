@@ -11,7 +11,7 @@ class Server {
         let s = this;
         this.ws.on("connection", function(client) {
             client.on("message", function(data) {
-                console.log("Received : %s", data);
+                console.log("Received : %s from %s", data, client.ID);
                 let msg = JSON.parse(data);
                 let method = "on"+msg[0].charAt(0).toUpperCase() + msg[0].slice(1);
                 let args = msg.slice(1);
@@ -27,19 +27,22 @@ class Server {
         });
     }
 
+    send(client, ...args) {
+        console.log("Sent : %s to %s", args, client.ID);
+        client.send(JSON.stringify(args));
+    }
+
     broadcast(method, ID, ...args) {
-        console.log("bcasting",method, ID,args);
         for (let i in this.users) {
             let user = this.users[i];
             if (user.readyState === WebSocket.OPEN && user.ID !== ID) {
-                user.send(JSON.stringify([method, ID, ...args]));
+                this.send(user, method, ID, ...args);
             }
         }
     }
 
     onJoin(client, gear, hat, x, y) {
         let ID = Math.random().toString(36).substring(7);
-        let bcast = JSON.stringify(["join", ID, gear, hat, x, y]);
 
         client.ID = ID;
         client.gear = gear;
@@ -51,8 +54,8 @@ class Server {
             let user = this.users[i];
             if (user.readyState === WebSocket.OPEN) {
                 let msg = JSON.stringify(["join", user.ID, user.gear, user.hat, user.x, user.y]);
-                client.send(msg);
-                user.send(bcast);
+                this.send(client, "join", user.ID, user.gear, user.hat, user.x, user.y);
+                this.send(user, "join", ID, gear, hat, x, y);
             }
         }
         this.users[ID] = client;

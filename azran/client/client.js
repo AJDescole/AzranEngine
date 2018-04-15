@@ -18,6 +18,10 @@ class Client {
         this.ws.onmessage = function(event) { c.onMessage(event); };
     }
 
+    send(...args) {
+        this.ws.send(JSON.stringify(args));
+    }
+
     onOpen(event) {
         let client = this;
         let player = new Player(this.library, this.animationfield, this.symbol);
@@ -33,11 +37,11 @@ class Client {
         player.setHat(hat);
         player.setGear(gear);
         player.onAnimationChange = function(label) {
-            client.ws.send(JSON.stringify(["animation", label, player.x, player.y]));
+            client.send("animation", label, player.x, player.y);
         };
         this.users["me"] = player;
 
-        this.ws.send(JSON.stringify(["join", gear, hat, x, y]));
+        this.send("join", gear, hat, x, y);
         this.scene.ac(player);
     }
 
