@@ -5,7 +5,7 @@
 ## Members of the project
 
 - **Descole** (myself) : founder, main server owner, main dev
-- **PascalGF** : community manager, communication, artistic director, intelligence services (also partially done with me)
+- **Barok** : communication, artistic director, intelligence services (also partially done with me)
 - **A former chapatiz developer** : IT counsil only (not actively participating for some reasons)
 
 ## Contact us
