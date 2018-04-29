@@ -32,7 +32,6 @@ class Client {
 
     onDelta(delta) {
         this.time += delta;
-        console.log(this.time);
         if (this.time >= 2000) {
             this.time = 0;
             console.log("ping");
