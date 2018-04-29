@@ -33,6 +33,18 @@ We're currently working on a tiny chat system for demonstration.
 
 Tiny chat done. Now working on UI and room system, inspired by discord. 
 
+### 2018-04-30
+
+Currently working on the (graphic) room system. More complicated than planned. 
+
+Converting flash files (from graphics designers) into MCF system takes too much time and even if it is accurate, it is also too much than the browser can handle. So, we're working on a smarter system : 
+- A room has a bitmap background. This background contains every graphics that are non-animated and that a character can walk on. (So, unattainable or higher sprites can be incorporated into the background)
+- A room has sprites which are on the same layer that the characters are on. This is needed because a character can be in front of a sprite or behind. 
+- Sprites can be MovieClip through the MCF system, or external images, or external spritesheets. 
+- Because the TMX format does not handle spritesheets with dynamic sizes, we cannot use it as the main map format. 
+- So, a room maker will be needed earlier that planned. It will most likely be the same as the users' one. 
+
+
 ## License
 
 This project is distributed under the MIT license.
