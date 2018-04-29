@@ -5,6 +5,8 @@ require('pixi-animate');
 var MovieClip = PIXI.animate.MovieClip;
 var Client = require('./client.js').Client;
 
+var MCF = require('./MovieClipFactory.js').MovieClipFactory;
+
 let AnimationLoader = function()
 {
     return function(resource, next)
@@ -23,24 +25,34 @@ PIXI.loaders.Loader.addPixiMiddleware(AnimationLoader);
 var Scene = MovieClip.e(function() {
     MovieClip.call(this);
 
-    let sprite = new PIXI.Sprite.fromImage("bg.png");
-    sprite.x -= 600;
-    this.ac(sprite);
+    let bg = new PIXI.Sprite.fromImage("mt.jotapdur.background.png");
+    bg.x -= 1700;
+    bg.y -= 500;
+    this.ac(bg);
 
     let client = new Client(this, PIXI.animate.ShapesCache, "animations", "228");
+
+    let pet = MCF(PIXI.animate.ShapesCache, "pet_a", "main");
+
+    this.ac(pet);
+
+    pet.x = 600;
+    pet.y = 600;
 
     client.connect("ws://localhost/azran_ws");
 });
 
 Scene.assets = {
     shapes: "azran.shapes.txt",
-    animations: "azran.animations.json"
+    animations: "azran.animations.json",
+    pet: "pet.shapes.txt",
+    pet_a: "pet.animations.json",
 };
 
 window.onload = function() {
-    let app = new PIXI.animate.Scene(1200, 800, {
+    let app = new PIXI.animate.Scene(window.innerWidth, window.innerHeight, {
         view: document.getElementById("stage"),
-        backgroundColor: 0xFFFFFF,
+        backgroundColor: 0xA08A49,
         antialias: true
     }).load(Scene);
 }
