@@ -128,6 +128,18 @@ let MovieClipFactory = function(library, animationfield, symbolfield, prefix = '
         }
     }
 
+    if (window.debug) {
+        let p = new PIXI.Graphics();
+        p.beginFill(0xFF0000);
+        p.lineStyle(0);
+        p.drawCircle(3, 3, 3);
+        p.endFill();
+        p.x = 0;
+        p.y = 0;
+
+        MC.ac(p);
+    }
+
     return MC;
 }
 

@@ -49,6 +49,8 @@ Scene.assets = {
     pet_a: "pet.animations.json",
 };
 
+window.debug = document.location.href.indexOf("?debug") !== -1 || document.location.href.indexOf("&debug") !== -1;
+
 window.onload = function() {
     let app = new PIXI.animate.Scene(window.innerWidth, window.innerHeight, {
         view: document.getElementById("stage"),
