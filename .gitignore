@@ -1,6 +1,4 @@
 azran/client/node_modules
-azran/client/azran.mixed.js
-azran/client/azran.mixed.js.map
-azran/server/server.mixed.js
-azran/server/server.mixed.js.map
 azran/server/node_modules
+*.mixed.js
+*.js.map
