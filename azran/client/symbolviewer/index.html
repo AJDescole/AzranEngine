@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Azran Symbol Viewer</title>
+        <link rel="stylesheet" type="text/css" href="symbolviewer.css" />
+    </head>
+    <body>
+        <canvas id="stage"></canvas>
+
+        <aside id="symbolviewer">
+			<form id="symbolform">
+				<label for="animationlibrary">Library : </label><select id="animationlibrary">
+					<option value="" disabled selected>--</option>
+				</select><br />
+				<label for="symbol">Symbol : </label><select id="symbol"></select><br />
+				<label for="zoom">Zoom : </label><input type="range" min="0" value="100" max="1000" id="zoom" /><br />
+				<input type="button" id="background" value="Toggle background" />
+			</form>
+        </aside>
+
+        <script src="symbolviewer.mixed.js"></script>
+    </body>
+</html>
