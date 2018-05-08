@@ -2,3 +2,4 @@ azran/client/node_modules
 azran/server/node_modules
 *.mixed.js
 *.js.map
+*.sublime-project
