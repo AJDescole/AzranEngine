@@ -10,12 +10,11 @@ const LIBRARY_IDENTIFIER_FORMAT = /^\$([a-zA-Z0-9_]{1,}\.){1,}\*$/g;
 const ITEM_IDENTIFIER_FORMAT = /^\$([a-zA-Z0-9_]{1,}\.){0,}[a-zA-Z0-9_]{1,}$/g
 
 class Library {
-	constructor(path, identifier, onLoadCallback) {
+	constructor(path, identifier) {
 		this.identifier = identifier;
 		this.path = path;
-		this.onLoadCallback = onLoadCallback;
-
 		this.loaded = false;
+
 		this.symbols = {};
 		this.materials = {};
 
@@ -24,48 +23,66 @@ class Library {
 		this.created_at = "";
 		this.updated_at = "";
 		this.title = {};
-
-		this.build(Library.libraryPath(path, identifier));
 	}
 
 	isLoaded() {
 		return this.loaded;
 	}
 
-	build(url) {
-		let req = new XMLHttpRequest;
-		let library = this;
-		req.open('GET', url, true);
-		req.onreadystatechange = function(event) {
-			if (req.readyState == 4 && req.status == 200) {
-				let response = JSON.parse(req.responseText);
-
-				let fields = [
-					"name",
-					"author",
-					"created_at",
-					"updated_at",
-					"title",
-					"materials",
-					"symbols"
-				];
-				for (let i in fields) {
-					let key = fields[i];
-					library[key] = response[key];
-				}
-
-				if (!library.materials) {
-					library.checkIfLoaded();
-				} else {
-					library.loadMaterials(library.materials);
-				}
-			}
-		};
-		req.send(null);
+	async build() {
+		return await this.load(this.constructor.libraryPath(this.path, this.identifier));
 	}
 
-	loadMaterials(materials) {
+	async load(url) {
+		let library = this;
+
+		return new Promise((resolve, reject) => {
+			let req = new XMLHttpRequest;
+			req.open('GET', url, true);
+			req.onreadystatechange = async (event) => {
+				if (req.readyState == 4) {
+					if (req.status == 200) {
+
+						let response = JSON.parse(req.responseText);
+						let fields = [
+							"name",
+							"author",
+							"created_at",
+							"updated_at",
+							"title",
+							"materials",
+							"symbols"
+						];
+						for (let i in fields) {
+							let key = fields[i];
+							library[key] = response[key];
+						}
+
+						await library.loadMaterials(library.materials);
+						if (library.checkIfLoaded()) {
+							resolve(library);
+						}
+						else {
+							reject("Could not load the whole library");
+						}
+
+					}
+					else {
+						reject("Library file not found");
+					}
+				}
+			};
+			req.send(null);
+		});
+	}
+
+	async loadMaterials(materials) {
 		this.materials = {};
+		let library = this;
+
+		if (!materials) {
+			return this;
+		}
 
 		let classes = {
 			"shapes": ShapeMaterial
@@ -80,19 +97,18 @@ class Library {
 			}
 		}
 
-		let library = this;
 		for (let key in materials) {
 			if (key in classes) {
 				for (let i in materials[key]) {
 					let identifier = materials[key][i];
 
-					new classes[key](this.path, identifier, function(material) {
-						library.materials[identifier] = material;
-						library.checkIfLoaded();
-					});
+					let material = await new classes[key](this.path, identifier).build();
+					library.materials[identifier] = material;
 				}
 			}
 		}
+
+		return this;
 	}
 
 	checkIfLoaded() {
@@ -101,16 +117,16 @@ class Library {
 			for (let key in this.materials) {
 				loaded &= !!this.materials[key];
 			}
-
-			if (loaded) {
-				this.loaded = true;
-				this.onLoadCallback(this);
-			}
+			this.loaded = loaded;
 		}
 		return this.isLoaded();
 	}
 
-	getItem(identifier) {
+	async getItem(identifier) {
+		if (!this.isLoaded()) {
+			await this.build();
+		}
+
 		let symbol = identifier;
 		if (identifier.indexOf(".") != -1) {
 			if (!RegExp(ITEM_IDENTIFIER_FORMAT, 'g').test(identifier)) {

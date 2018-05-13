@@ -3,17 +3,18 @@
 const MATERIAL_IDENTIFIER_FORMAT = /^([a-zA-Z0-9_]{1,}\.){0,}[a-zA-Z0-9_]{1,}$/g;
 
 class Material {
-	constructor(path, identifier, onLoadCallback) {
+	constructor(path, identifier) {
 		this.identifier = identifier;
 		this.path = path;
-		this.onLoadCallback = onLoadCallback;
 		this.loaded = false;
-
-		this.build(this.constructor.materialPath(path, identifier));
 	}
 
-	build(url) {
-		this.onLoadCallback(this);
+	async build() {
+		return await this.load(this.constructor.materialPath(this.path, this.identifier));
+	}
+
+	async load(url) {
+		return this;
 	}
 
 	isLoaded() {
