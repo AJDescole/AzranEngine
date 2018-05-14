@@ -1,4 +1,6 @@
 "use strict";
+require('pixi.js');
+require('pixi-animate');
 var Material = require('./Material.js').Material;
 
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -17,8 +19,17 @@ class ShapeMaterial extends Material {
 			req.onreadystatechange = function(event) {
 				if (req.readyState == 4) {
 					if (req.status == 200) {
-						material.shapes = req.responseText.split("\n");
+						let shapes = PIXI.animate.utils.deserializeShapes(req.responseText);
+						for (let index in shapes) {
+							for (let i in shapes[index]) {
+								let arg = shapes[index][i];
+								if (typeof arg == 'string' && arg[0] === '#') {
+									shapes[index][i] = PIXI.animate.utils.hexToUint(arg);
+								}
+							}
+						}
 
+						material.shapes = shapes;
 						material.loaded = true;
 						resolve(material);
 					}
@@ -29,6 +40,11 @@ class ShapeMaterial extends Material {
 			};
 			req.send(null);
 		});
+	}
+
+	getShape(index) {
+		console.log(this.shapes[index]);
+		return this.shapes[index];
 	}
 
 	static materialPath(path, identifier) {
