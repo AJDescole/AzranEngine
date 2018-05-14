@@ -1,5 +1,6 @@
 "use strict";
 var Library = require('./Library.js').Library;
+var Item = require('./Item.js').Item;
 
 class ItemLoader {
 
@@ -34,13 +35,15 @@ class ItemLoader {
 		return this;
 	}
 
-	static async getItem(item) {
+	static async getItem(identifier) {
 		let c = this.constructor;
 		if (!c.initialized)
 			throw "ItemLoader not initialized";
 
-		let library = await this.preload(item);
-		return await library.getItem(item);
+		let library = await this.preload(identifier);
+		let commands = await library.getItem(identifier);
+
+		return new Item(library, identifier, commands, this.constructor);
 	}
 }
 
