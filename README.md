@@ -44,6 +44,24 @@ Converting flash files (from graphics designers) into MCF system takes too much 
 - Because the TMX format does not handle spritesheets with dynamic sizes, we cannot use it as the main map format. 
 - So, a room maker will be needed earlier that planned. It will most likely be the same as the users' one. 
 
+### 2018-05-15
+
+Rebuilt the MovieClipFactory as a whole item system. 
+- Library is a dictionnary of graphical symbols using raw materials
+- Material is an abstract model of raw graphics used by an item
+- ShapeMaterial is a list of graphical commands sequence (provided by pixi-animate)
+- Item is a rich sprite defined and loaded by a library
+- Commands is a worker which applies commands sequences described in Library
+- ItemLoader is a singleton which handles libraries and item. It is the main loader. 
+
+Will document these classes and file formats later. 
+
+Next : 
+- Remove MovieClipFactory
+- Tidy the repository
+- Make items work relatively to others (so we don't need to declare absolute item identifiers every time)
+- Migrate avatar to this new item system
+- Build the rooms around the items
 
 ## License
 
